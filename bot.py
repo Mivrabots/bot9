@@ -135,12 +135,12 @@ def generate_leaderboard_graph():
     return file_name
 
 # --- Commands ---
-@bot.slash_command(name="balance", description="Check your balance.")
+@bot.tree.command(name="balance", description="Check your balance.")
 async def balance(ctx):
     user = get_user(ctx.author.id)
     await ctx.respond(f"💰 Wallet: **${user[1]}**\n🏦 Bank: **${user[2]}**.")
 
-@bot.slash_command(name="deposit", description="Deposit money into your bank.")
+@bot.tree.command(name="deposit", description="Deposit money into your bank.")
 async def deposit(ctx, amount: int):
     user = get_user(ctx.author.id)
     if amount > user[1]:
@@ -154,7 +154,7 @@ async def deposit(ctx, amount: int):
 
     await ctx.respond(f"✅ Deposited **${amount}** into your bank.\n🏦 New bank balance: **${new_bank}**.")
 
-@bot.slash_command(name="withdraw", description="Withdraw money from your bank.")
+@bot.tree.command(name="withdraw", description="Withdraw money from your bank.")
 async def withdraw(ctx, amount: int):
     user = get_user(ctx.author.id)
     if amount > user[2]:
@@ -168,7 +168,7 @@ async def withdraw(ctx, amount: int):
 
     await ctx.respond(f"✅ Withdrew **${amount}** from your bank.\n💰 New wallet balance: **${new_wallet}**.")
 
-@bot.slash_command(name="compound_interest", description="Apply compound interest to your bank balance.")
+@bot.tree.command(name="compound_interest", description="Apply compound interest to your bank balance.")
 async def compound_interest(ctx):
     user = get_user(ctx.author.id)
     last_calculated = user[3]  # Assuming column 3 stores the last calculated time
@@ -193,7 +193,7 @@ async def compound_interest(ctx):
 
     await ctx.respond(f"🏦 Compound interest applied!\nNew bank balance: **${new_balance}**.")
 
-@bot.slash_command(name="market", description="View stock prices.")
+@bot.tree.command(name="market", description="View stock prices.")
 async def market(ctx):
     cursor.execute("SELECT * FROM stocks")
     stocks = cursor.fetchall()
@@ -206,7 +206,7 @@ async def market(ctx):
         embed.add_field(name=stock[0], value=f"Price: **${stock[1]}**", inline=False)
     await ctx.respond(embed=embed)
 
-@bot.slash_command(name="stock_trend", description="View the multi-day price trend of a stock.")
+@bot.tree.command(name="stock_trend", description="View the multi-day price trend of a stock.")
 async def stock_trend(ctx, stock_name: str):
     file_path = generate_stock_trend_graph(stock_name)
     if not file_path:
@@ -216,7 +216,7 @@ async def stock_trend(ctx, stock_name: str):
     await ctx.respond(file=discord.File(file_path))
     os.remove(file_path)
 
-@bot.slash_command(name="leaderboard", description="View the leaderboard of the wealthiest users.")
+@bot.tree.command(name="leaderboard", description="View the leaderboard of the wealthiest users.")
 async def leaderboard(ctx):
     file_path = generate_leaderboard_graph()
     if not file_path:
@@ -226,7 +226,7 @@ async def leaderboard(ctx):
     await ctx.respond(file=discord.File(file_path))
     os.remove(file_path)
 
-@bot.slash_command(name="update_market", description="Update stock prices (Admin only).")
+@bot.tree.command(name="update_market", description="Update stock prices (Admin only).")
 @commands.has_permissions(administrator=True)
 async def update_market(ctx):
     update_stock_prices()
