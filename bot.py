@@ -235,7 +235,12 @@ async def update_market(ctx):
 # --- Events ---
 @bot.event
 async def on_ready():
-    print(f"Logged in as {bot.user}!")
+    print(f"Logged in as {bot.user}")
+    try:
+        synced = await bot.tree.sync()
+        print(f"Synced {len(synced)} commands!")
+    except Exception as e:
+        print(f"Error syncing commands: {e}")
 
 # Scheduler for automated stock updates
 scheduler = AsyncIOScheduler()
